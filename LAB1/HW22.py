@@ -7,7 +7,6 @@ from astropy.utils.data import get_pkg_data_filename
 plt.style.use(astropy_mpl_style)
 
 bias_data = []
-# hello world
 for i in range(100, 110):
     filename = f"bias/d{i}.fits"
     with fits.open(filename) as hdulist:
