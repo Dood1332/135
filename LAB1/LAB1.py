@@ -2,7 +2,7 @@ from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
 import statistics
-
+#hi
 bias_data = []
 #For loop creates list of bias.fits data
 for i in range(100, 110):
