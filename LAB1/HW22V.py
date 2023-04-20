@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import statistics
 from astropy.visualization import astropy_mpl_style
 from astropy.utils.data import get_pkg_data_filename
-plt.style.use(astropy_mpl_style)
+#plt.style.use(astropy_mpl_style)
 
 bias_data = []
 for i in range(100, 110):
@@ -16,7 +16,7 @@ for i in range(100, 110):
 #Median of all bias data lists
 master_bias = np.median([bias_data[0], bias_data[1], bias_data[2], bias_data[3], bias_data[4]], axis=0)
 
-plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 25)
+plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 19)
 plt.savefig('master_bias.pdf')
 plt.show()
 
@@ -46,8 +46,7 @@ plt.show()
 
 ##### 3b & 4 #####
 clean_flat = master_bias - master_flat
-clean_flat_1D = clean_flat.flatten()
-clean_mean = statistics.mean(clean_flat_1D)
+clean_mean = np.mean(clean_flat)
 normalized_clean = clean_flat / clean_mean
 
 plt.imshow(normalized_clean)
@@ -76,7 +75,7 @@ for i in range(141, 146):
         M67B_data.append(data)
         cleandata = data - master_bias
         clean_M67B_data.append(cleandata)
-        persec = cleandata / (exptimes[i - 141] * 900)
+        persec = cleandata / (exptimes[i - 141])
         persec_M67B.append(persec)
 
 # for i in range(0, 5):
@@ -98,7 +97,7 @@ calibrated_science = master_M67B / normalized_clean
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science,cmap='gray', vmin=0,vmax=np.max(calibrated_science))
+plt.imshow(calibrated_science, vmin=0, vmax=50)
 plt.colorbar()
 plt.savefig('calibrated_science.pdf')
 plt.show()

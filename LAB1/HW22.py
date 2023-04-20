@@ -16,7 +16,7 @@ for i in range(100, 110):
 #Median of all bias data lists
 master_bias = np.median([bias_data[0], bias_data[1], bias_data[2], bias_data[3], bias_data[4]], axis=0)
 
-plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 25)
+plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 19)
 plt.savefig('master_bias.pdf')
 plt.show()
 
@@ -37,7 +37,7 @@ for i in range(0, 5):
 
 master_flat = np.median(flat_data, axis=0)
 plt.hist2d(master_flat[:, 0], master_flat[:, 1], bins = 25)
-plt.savefig('master_bias.pdf')
+plt.savefig('master_flat.pdf')
 plt.show()
 # plt.imshow(master_flat)
 # plt.savefig('master_flat.pdf')
@@ -76,7 +76,7 @@ for i in range(171, 176):
         M53_data.append(data)
         cleandata = data - master_bias
         clean_M53_data.append(cleandata)
-        persec = cleandata / (exptimes[i - 171] * 1900)
+        persec = cleandata / (exptimes[i - 171] * 150)
         persec_M53B.append(persec)
 
 # for i in range(0, 5):
