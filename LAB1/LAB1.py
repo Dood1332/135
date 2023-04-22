@@ -1,6 +1,9 @@
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
+import sep
+from matplotlib import rcParams
+from matplotlib.patches import Ellipse
 
 
 def calibrate_science_data(flat_filters, science_filters):
@@ -68,7 +71,36 @@ calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[5], vmin=0, vmax=50)
+plt.imshow(calibrated_science_data[3], vmin=0, vmax=50)
 plt.colorbar()
 #plt.savefig('calibrated_current_index.pdf')
 plt.show()
+
+def bg_subtraction(data):
+    bkg = sep.Background(data)
+    print(bkg.globalback)
+    print(bkg.globalrms)
+    
+    bkg_image = bkg.back()
+    bkg_rms = bkg.rms()
+    
+    data_sub = data - bkg
+
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+
+
+    fig, ax = plt.subplots()
+    m, s = np.mean(data_sub), np.std(data_sub)
+    im = ax.imshow(data_sub, interpolation='nearest', cmap='gray',
+                    vmin=m-s, vmax=m+s, origin='lower')
+    for i in range(len(objects)):
+        e = Ellipse(xy=(objects['x'][i], objects['y'][i]),
+                width=6*objects['a'][i],
+                height=6*objects['b'][i],
+                angle=objects['theta'][i] * 180. / np.pi)
+        e.set_facecolor('none')
+        e.set_edgecolor('red')
+        ax.add_artist(e)
+    plt.show()
+
+bg_subtraction(calibrated_science_data[0])
