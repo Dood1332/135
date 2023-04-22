@@ -1,60 +1,74 @@
-import matplotlib.pyplot as plt
-import numpy as np
 from astropy.io import fits
-import statistics
-from astropy.visualization import astropy_mpl_style
-from astropy.utils.data import get_pkg_data_filename
-plt.style.use(astropy_mpl_style)
+import numpy as np
+import matplotlib.pyplot as plt
 
-bias_data = []
-for i in range(100,110):
-    filename = f"bias/d{i}.fits"
-    data = fits.getdata(filename, ext=0)
-    bias_data.append(data)
 
-master_bias = np.median(bias_data, axis=0)
-plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 25)
-plt.show()
+def calibrate_science_data(flat_filters, science_filters):
+    bias_data = []
+    for i in range(100, 110):
+        filename = f"bias/d{i}.fits"
+        with fits.open(filename) as hdulist:
+            data = hdulist['PRIMARY'].data
+            bias_data.append(data)
 
-flat_data = []
-for i in range(110,115):
-    filename = f"flat/B/d{i}.fits"
-    data = fits.getdata(filename, ext=0)
-    flat_data.append(data)
+    #Median of all bias data lists
+    master_bias = np.median(bias_data, axis=0)
 
-master_flat = np.median(flat_data, axis=0)
-plt.hist2d(master_flat[:, 0], master_flat[:, 1], bins = 25)
-plt.show()
+    flat_data = []
+    for flat_filter in flat_filters:
+        for i in range(flat_filter[0], flat_filter[1]):
+            filename = f"flat/{flat_filter[2]}/d{i}.fits"
+            with fits.open(filename) as hdulist:
+                data = hdulist['PRIMARY'].data
+                flat_data.append(data)
 
-clean_flat = master_flat - master_bias
-clean_flat_mean = np.mean(clean_flat)
-norm_clean_flat = clean_flat / clean_flat_mean
+    master_flat = np.median(flat_data, axis=0)
 
-plt.hist2d(norm_clean_flat[:, 0], norm_clean_flat[:, 1], bins = 25)
-plt.show()
+    # Subtract master flat from master bias to obtain clean flat
+    clean_flat = master_bias - master_flat
 
-M53B_data = []
-for i in range(171,176):
-    filename = f"M53/B/d{i}.fits"
-    data = fits.getdata(filename, ext=0)
-    M53B_data.append(data)
+    # Compute mean of clean flat and normalize by it to obtain normalized flat
+    clean_mean = np.mean(clean_flat)
+    normalized_clean = clean_flat / clean_mean
 
-exptimes = []
-for i in range(171,176):
-    filename = f"M53/B/d{i}.fits"
-    with fits.open(filename) as hdulist:
-        exptime = hdulist[0].header['EXPTIME']
-        exptimes.append(exptime)
+    science_data = []
+    for science_filter in science_filters:
+        exptimes = []
+        science_filter_data = []
+        for i in range(science_filter[0], science_filter[1]):
+            filename = f"{science_filter[2]}/d{i}.fits"
+            with fits.open(filename) as hdulist:
+                exptime = hdulist[0].header['EXPTIME']
+                exptimes.append(exptime)
+                data = hdulist['PRIMARY'].data
+                science_filter_data.append(data)
 
-persec_B = []
-for i in range(0, 5):
-    clean_data = M53B_data[i] - master_bias
-    persec = clean_data[i] / exptimes[i]
-    persec_B.append(persec)
+        clean_science_data = []
+        persec_science_data = []
+        for i in range(len(science_filter_data)):
+            cleandata = science_filter_data[i] - master_bias
+            clean_science_data.append(cleandata)
+            persec = cleandata / (exptimes[i])
+            persec_science_data.append(persec)
 
-master_M53B = np.median(persec_B, axis=0)
+        #Median of all science data lists
+        master_science_data = np.median(persec_science_data, axis=0)
 
-calibrated_M53B = master_M53B / norm_clean_flat
+        # Calibrate science data by dividing by normalized flat
+        calibrated_science_data = master_science_data / normalized_clean
+
+        science_data.append(calibrated_science_data)
+
+    return science_data
+
+flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
+science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
+calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
+
 plt.figure("calibrated science")
-plt.imshow(calibrated_M53B,cmap='gray', vmin=0,vmax=np.amax(calibrated_M53B))
+ax = plt.axes()
+ax.set_facecolor("red")
+plt.imshow(calibrated_science_data[5], vmin=0, vmax=50)
+plt.colorbar()
+#plt.savefig('calibrated_current_index.pdf')
 plt.show()
