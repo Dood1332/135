@@ -27,10 +27,7 @@ def calibrate_science_data(flat_filters, science_filters):
 
     master_flat = np.median(flat_data, axis=0)
 
-    # Subtract master flat from master bias to obtain clean flat
     clean_flat = master_bias - master_flat
-
-    # Compute mean of clean flat and normalize by it to obtain normalized flat
     clean_mean = np.mean(clean_flat)
     normalized_clean = clean_flat / clean_mean
 
@@ -54,12 +51,9 @@ def calibrate_science_data(flat_filters, science_filters):
             persec = cleandata / (exptimes[i])
             persec_science_data.append(persec)
 
-        #Median of all science data lists
         master_science_data = np.median(persec_science_data, axis=0)
 
-        # Calibrate science data by dividing by normalized flat
         calibrated_science_data = master_science_data / normalized_clean
-
         science_data.append(calibrated_science_data)
 
     return science_data
@@ -71,10 +65,12 @@ calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[3], vmin=0, vmax=50)
+plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
 plt.colorbar()
 #plt.savefig('calibrated_current_index.pdf')
 plt.show()
+
+object = []
 
 def bg_subtraction(data):
     bkg = sep.Background(data)
@@ -87,7 +83,7 @@ def bg_subtraction(data):
     data_sub = data - bkg
 
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-
+    
 
     fig, ax = plt.subplots()
     m, s = np.mean(data_sub), np.std(data_sub)
