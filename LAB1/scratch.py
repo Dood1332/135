@@ -1,6 +1,9 @@
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
+import sep
+from matplotlib import rcParams
+from matplotlib.patches import Ellipse
 
 
 def calibrate_science_data(flat_filters, science_filters):
@@ -24,10 +27,7 @@ def calibrate_science_data(flat_filters, science_filters):
 
     master_flat = np.median(flat_data, axis=0)
 
-    # Subtract master flat from master bias to obtain clean flat
     clean_flat = master_bias - master_flat
-
-    # Compute mean of clean flat and normalize by it to obtain normalized flat
     clean_mean = np.mean(clean_flat)
     normalized_clean = clean_flat / clean_mean
 
@@ -51,15 +51,13 @@ def calibrate_science_data(flat_filters, science_filters):
             persec = cleandata / (exptimes[i])
             persec_science_data.append(persec)
 
-        #Median of all science data lists
         master_science_data = np.median(persec_science_data, axis=0)
 
-        # Calibrate science data by dividing by normalized flat
         calibrated_science_data = master_science_data / normalized_clean
-
         science_data.append(calibrated_science_data)
 
     return science_data
+    return exptimes
 
 flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
@@ -68,7 +66,72 @@ calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[5], vmin=0, vmax=50)
+plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
 plt.colorbar()
 #plt.savefig('calibrated_current_index.pdf')
 plt.show()
+
+object = []
+
+def bg_subtraction(data):
+    bkg = sep.Background(data)
+    print(bkg.globalback)
+    print(bkg.globalrms)
+    
+    bkg_image = bkg.back()
+    bkg_rms = bkg.rms()
+    
+    data_sub = data - bkg
+
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+    
+
+    fig, ax = plt.subplots()
+    m, s = np.mean(data_sub), np.std(data_sub)
+    im = ax.imshow(data_sub, interpolation='nearest', cmap='gray',
+                    vmin=m-s, vmax=m+s, origin='lower')
+    for i in range(len(objects)):
+        e = Ellipse(xy=(objects['x'][i], objects['y'][i]),
+                width=6*objects['a'][i],
+                height=6*objects['b'][i],
+                angle=objects['theta'][i] * 180. / np.pi)
+        e.set_facecolor('none')
+        e.set_edgecolor('red')
+        ax.add_artist(e)
+    plt.show()
+
+bg_subtraction(calibrated_science_data[0])
+
+def HR(data):
+    zp = 25.0
+    gain = 1.0
+    bkg = sep.Background(data)
+    data_sub = data - bkg
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+    
+
+with fits.open('M53/B/d171.fits') as hdulist:
+    data = hdulist[0].data
+    header = hdulist[0].header
+
+# Extract the necessary data from the header
+teff = header['TEFF']
+feh = header['FEH']
+log_g = header['LOG_G']
+
+# Convert the 2D array into a 1D array
+data = data.flatten()
+
+# Calculate the absolute magnitude using the distance modulus
+distance_modulus = 5 * np.log10(distance) - 5
+abs_mag = -2.5 * np.log10(data) - distance_modulus
+
+# Plot the HR diagram
+plt.scatter(teff, abs_mag, c=feh, cmap='coolwarm')
+plt.xlabel('Effective Temperature (K)')
+plt.ylabel('Absolute Magnitude')
+plt.gca().invert_yaxis()
+plt.colorbar(label='Metallicity')
+plt.show()
+    

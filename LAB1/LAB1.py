@@ -58,17 +58,18 @@ def calibrate_science_data(flat_filters, science_filters):
 
     return science_data
 
+
 flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 
-plt.figure("calibrated science")
-ax = plt.axes()
-ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
-plt.colorbar()
-#plt.savefig('calibrated_current_index.pdf')
-plt.show()
+# plt.figure("calibrated science")
+# ax = plt.axes()
+# ax.set_facecolor("red")
+# plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+# plt.colorbar()
+# plt.savefig('calibrated_current_index.pdf')
+# plt.show()
 
 object = []
 
@@ -98,5 +99,17 @@ def bg_subtraction(data):
         e.set_edgecolor('red')
         ax.add_artist(e)
     plt.show()
+    return print(objects.dtype.names)
 
 bg_subtraction(calibrated_science_data[0])
+
+def HR(data):
+    zp = 25.0
+    gain = 1.0
+    bkg = sep.Background(data)
+    data_sub = data - bkg
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+    
+
+HR(calibrated_science_data[0])
