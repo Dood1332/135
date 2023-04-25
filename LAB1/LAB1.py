@@ -71,12 +71,10 @@ calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 # plt.savefig('calibrated_current_index.pdf')
 # plt.show()
 
-object = []
+
 
 def bg_subtraction(data):
     bkg = sep.Background(data)
-    print(bkg.globalback)
-    print(bkg.globalrms)
     
     bkg_image = bkg.back()
     bkg_rms = bkg.rms()
@@ -99,9 +97,8 @@ def bg_subtraction(data):
         e.set_edgecolor('red')
         ax.add_artist(e)
     plt.show()
-    return print(objects.dtype.names)
 
-bg_subtraction(calibrated_science_data[0])
+#bg_subtraction(calibrated_science_data[0])
 
 def HR(data):
     zp = 25.0
@@ -110,6 +107,26 @@ def HR(data):
     data_sub = data - bkg
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
     flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
-    
+    return flux
 
 HR(calibrated_science_data[0])
+
+for arr in calibrated_science_data:
+    arr[np.isnan(arr)] = 1e-10
+    arr[arr == 0] = 1e-10
+
+x = np.log(calibrated_science_data[0] - calibrated_science_data[1])
+y = np.log(np.median([calibrated_science_data[0], calibrated_science_data[1], calibrated_science_data[2]], axis=0))
+
+
+a = np.log(calibrated_science_data[3] - calibrated_science_data[4])
+b = np.log(np.median([calibrated_science_data[3], calibrated_science_data[4], calibrated_science_data[5]], axis=0))
+
+
+plt.scatter(x,y)
+plt.savefig('HR_M53.pdf')
+plt.show()
+
+plt.scatter(a,b)
+plt.savefig('HR_M67.pdf')
+plt.show()
