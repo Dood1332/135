@@ -63,13 +63,13 @@ flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 
-# plt.figure("calibrated science")
-# ax = plt.axes()
-# ax.set_facecolor("red")
-# plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
-# plt.colorbar()
-# plt.savefig('calibrated_current_index.pdf')
-# plt.show()
+plt.figure("calibrated science")
+ax = plt.axes()
+ax.set_facecolor("red")
+plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+plt.colorbar()
+plt.savefig('calibrated_current_index.pdf')
+plt.show()
 
 
 
@@ -98,7 +98,7 @@ def bg_subtraction(data):
         ax.add_artist(e)
     plt.show()
 
-#bg_subtraction(calibrated_science_data[0])
+bg_subtraction(calibrated_science_data[0])
 
 def HR(data):
     zp = 25.0
@@ -111,9 +111,15 @@ def HR(data):
 
 HR(calibrated_science_data[0])
 
-for arr in calibrated_science_data:
-    arr[np.isnan(arr)] = 1e-10
-    arr[arr == 0] = 1e-10
+
+
+
+
+
+
+
+
+
 
 x = np.log(calibrated_science_data[0] - calibrated_science_data[1])
 y = np.log(np.median([calibrated_science_data[0], calibrated_science_data[1], calibrated_science_data[2]], axis=0))
