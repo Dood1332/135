@@ -5,6 +5,7 @@ import sep
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 
+m_dust_ext = 0.083
 
 def calibrate_science_data(flat_filters, science_filters):
     bias_data = []
@@ -60,18 +61,26 @@ def calibrate_science_data(flat_filters, science_filters):
 
 
 flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
+calibration_filters = [(126, 131, "cali/B"), (131, 136, "cali/V"), (136, 141, "cali/R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
+calibrated_calibration_data = calibrate_science_data(flat_filters, calibration_filters)
+
+# plt.figure("calibrated science")
+# ax = plt.axes()
+# ax.set_facecolor("red")
+# plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+# plt.colorbar()
+# plt.savefig('calibrated_current_index.pdf')
+# plt.show()
 
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+plt.imshow(calibrated_calibration_data[0], vmin=0, vmax=50)
 plt.colorbar()
-plt.savefig('calibrated_current_index.pdf')
+plt.savefig('calibrated_calibratedB.pdf')
 plt.show()
-
-
 
 def bg_subtraction(data):
     bkg = sep.Background(data)
@@ -98,7 +107,7 @@ def bg_subtraction(data):
         ax.add_artist(e)
     plt.show()
 
-bg_subtraction(calibrated_science_data[0])
+#bg_subtraction(calibrated_science_data[0])
 
 def HR(data):
     zp = 25.0
@@ -108,31 +117,14 @@ def HR(data):
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
     flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
     return flux
+print(HR(calibrated_calibration_data[0]))
 
-HR(calibrated_science_data[0])
+# cali_dataB = []
+# for i in range(126, 131):
+#     filename = f"cali/B/d{i}.fits"
+#     with fits.open(filename) as hdulist:
+#         data = hdulist['PRIMARY'].data
+#         cali_dataB.append(data)
+# master_caliB = np.median(cali_dataB)
 
-
-
-
-
-
-
-
-
-
-
-x = np.log(calibrated_science_data[0] - calibrated_science_data[1])
-y = np.log(np.median([calibrated_science_data[0], calibrated_science_data[1], calibrated_science_data[2]], axis=0))
-
-
-a = np.log(calibrated_science_data[3] - calibrated_science_data[4])
-b = np.log(np.median([calibrated_science_data[3], calibrated_science_data[4], calibrated_science_data[5]], axis=0))
-
-
-plt.scatter(x,y)
-plt.savefig('HR_M53.pdf')
-plt.show()
-
-plt.scatter(a,b)
-plt.savefig('HR_M67.pdf')
-plt.show()
+# print(master_caliB)

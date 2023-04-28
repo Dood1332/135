@@ -1,10 +1,11 @@
+from __future__ import division
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
 import sep
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
-
+import pandas as pd
 
 def calibrate_science_data(flat_filters, science_filters):
     bias_data = []
@@ -63,13 +64,13 @@ flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 
-plt.figure("calibrated science")
-ax = plt.axes()
-ax.set_facecolor("red")
-plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
-plt.colorbar()
-#plt.savefig('calibrated_current_index.pdf')
-plt.show()
+# plt.figure("calibrated science")
+# ax = plt.axes()
+# ax.set_facecolor("red")
+# plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+# plt.colorbar()
+# #plt.savefig('calibrated_current_index.pdf')
+# plt.show()
 
 object = []
 
@@ -100,7 +101,7 @@ def bg_subtraction(data):
         ax.add_artist(e)
     plt.show()
 
-bg_subtraction(calibrated_science_data[0])
+#bg_subtraction(calibrated_science_data[0])
 
 def HR(data):
     zp = 25.0
@@ -111,27 +112,5 @@ def HR(data):
     flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
     
 
-with fits.open('M53/B/d171.fits') as hdulist:
-    data = hdulist[0].data
-    header = hdulist[0].header
 
-# Extract the necessary data from the header
-teff = header['TEFF']
-feh = header['FEH']
-log_g = header['LOG_G']
 
-# Convert the 2D array into a 1D array
-data = data.flatten()
-
-# Calculate the absolute magnitude using the distance modulus
-distance_modulus = 5 * np.log10(distance) - 5
-abs_mag = -2.5 * np.log10(data) - distance_modulus
-
-# Plot the HR diagram
-plt.scatter(teff, abs_mag, c=feh, cmap='coolwarm')
-plt.xlabel('Effective Temperature (K)')
-plt.ylabel('Absolute Magnitude')
-plt.gca().invert_yaxis()
-plt.colorbar(label='Metallicity')
-plt.show()
-    
