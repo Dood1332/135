@@ -6,6 +6,8 @@ from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 
 m_dust_ext = 0.083
+m_dust_ext_cali = 0.148
+
 
 def calibrate_science_data(flat_filters, science_filters):
     bias_data = []
@@ -119,12 +121,13 @@ def HR(data):
     return flux
 print(HR(calibrated_calibration_data[0]))
 
-# cali_dataB = []
-# for i in range(126, 131):
-#     filename = f"cali/B/d{i}.fits"
-#     with fits.open(filename) as hdulist:
-#         data = hdulist['PRIMARY'].data
-#         cali_dataB.append(data)
-# master_caliB = np.median(cali_dataB)
+cali_dataB = []
+for i in range(126, 131):
+    filename = f"cali/B/d{i}.fits"
+    with fits.open(filename) as hdulist:
+        data = hdulist['HEADER'].data
+        cali_dataB.append(data)
+master_caliB = np.median(cali_dataB)
 
-# print(master_caliB)
+print(master_caliB)
+#change
