@@ -156,8 +156,8 @@ mag_airdus_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
 mag_airdus_caliV = 
 mag_airdus_caliR = 
 
-mag_airdus_sciB = 
-mag_airdus_sciV = 
-mag_airdus_sciR = 
+m_dust_ext_sciB = 0.117
+m_dust_ext_sciV = 0.083
+m_dust_ext_sciR = 0.072
 
 print(mag_airatm_caliB, mag_airmatm_caliV, mag_airatm_caliR)
