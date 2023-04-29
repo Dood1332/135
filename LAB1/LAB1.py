@@ -5,15 +5,19 @@ import sep
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 
+
+m_dust_ext_sciB = 0.117
 m_dust_ext_sciV = 0.083
+m_dust_ext_sciR = 0.072
 
-
+m_dust_ext_caliB = 
 m_dust_ext_caliV = 0.148
+m_dust_ext_caliR = 
 
 #Multiply by airmass!
-m_atm_extB = 0.234
-m_atm_extV = 0.460 
-m_atm_extR = 0.094
+m_atm_extB = 0.234 #478.5
+m_atm_extV = 0.460 #386.2
+m_atm_extR = 0.094 #710.0
 
 flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 calibration_filters = [(126, 131, "cali/B"), (131, 136, "cali/V"), (136, 141, "cali/R")]
@@ -138,13 +142,22 @@ def mag_atm_ext(filters, m_atm_ext):
     mag_airmass = np.median(calibration_airmass) * m_atm_ext
     return mag_airmass
 
+#Atm ext
+mag_airatm_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
+mag_airatm_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
+mag_airatm_caliR = mag_atm_ext(calibration_filters[2], m_atm_extR)
 
-mag_airmass_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
-mag_airmass_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
-mag_airmass_caliR = mag_atm_ext(calibration_filters[2], m_atm_extR)
+mag_airatm_sciB = mag_atm_ext(science_filters[0], m_atm_extB)
+mag_airatm_sciV = mag_atm_ext(science_filters[1], m_atm_extV)
+mag_airatm_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
 
-mag_airmass_sciB = mag_atm_ext(science_filters[0], m_atm_extB)
-mag_airmass_sciV = mag_atm_ext(science_filters[1], m_atm_extV)
-mag_airmass_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
+#Dust ext
+mag_airdus_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
+mag_airdus_caliV = 
+mag_airdus_caliR = 
 
-print(mag_airmass_caliB, mag_airmass_caliV, mag_airmass_caliR)
+mag_airdus_sciB = 
+mag_airdus_sciV = 
+mag_airdus_sciR = 
+
+print(mag_airatm_caliB, mag_airmatm_caliV, mag_airatm_caliR)
