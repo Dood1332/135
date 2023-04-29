@@ -5,8 +5,20 @@ import sep
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 
-m_dust_ext = 0.083
-m_dust_ext_cali = 0.148
+m_dust_ext_sciV = 0.083
+
+
+m_dust_ext_caliV = 0.148
+
+#Multiply by airmass!
+m_atm_extB = 0.234
+m_atm_extV = 0.460 
+m_atm_extR = 0.094
+
+flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
+calibration_filters = [(126, 131, "cali/B"), (131, 136, "cali/V"), (136, 141, "cali/R")]
+science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"),
+                   (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 
 
 def calibrate_science_data(flat_filters, science_filters):
@@ -57,77 +69,82 @@ def calibrate_science_data(flat_filters, science_filters):
         master_science_data = np.median(persec_science_data, axis=0)
 
         calibrated_science_data = master_science_data / normalized_clean
+        
         science_data.append(calibrated_science_data)
 
     return science_data
 
 
-flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
-calibration_filters = [(126, 131, "cali/B"), (131, 136, "cali/V"), (136, 141, "cali/R")]
-science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"), (141, 146, "M67/B"), (146, 151, "M67/V"), (151, 156, "M67/R")]
 calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 calibrated_calibration_data = calibrate_science_data(flat_filters, calibration_filters)
+
 
 # plt.figure("calibrated science")
 # ax = plt.axes()
 # ax.set_facecolor("red")
-# plt.imshow(calibrated_science_data[0], vmin=0, vmax=50)
+# calibrated_calibration_data[0][calibrated_calibration_data[0] < 0] = 0
+# plt.imshow(calibrated_calibration_data[0], interpolation='nearest', vmin=0, vmax=50)
 # plt.colorbar()
-# plt.savefig('calibrated_current_index.pdf')
+# #plt.savefig('calibrated_calibratedB.pdf')
 # plt.show()
 
-plt.figure("calibrated science")
-ax = plt.axes()
-ax.set_facecolor("red")
-plt.imshow(calibrated_calibration_data[0], vmin=0, vmax=50)
-plt.colorbar()
-plt.savefig('calibrated_calibratedB.pdf')
-plt.show()
+#Making the HR Diagram
 
 def bg_subtraction(data):
     bkg = sep.Background(data)
     
     bkg_image = bkg.back()
     bkg_rms = bkg.rms()
-    
+
     data_sub = data - bkg
 
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+
     
+    print('Objects detected:',len(objects))
 
     fig, ax = plt.subplots()
     m, s = np.mean(data_sub), np.std(data_sub)
     im = ax.imshow(data_sub, interpolation='nearest', cmap='gray',
-                    vmin=m-s, vmax=m+s, origin='lower')
+                    vmin=0, vmax=50)
+    
+    #limit ellipse size
+    min_size = 1
+    max_size = 75
+
     for i in range(len(objects)):
-        e = Ellipse(xy=(objects['x'][i], objects['y'][i]),
-                width=6*objects['a'][i],
-                height=6*objects['b'][i],
-                angle=objects['theta'][i] * 180. / np.pi)
-        e.set_facecolor('none')
-        e.set_edgecolor('red')
-        ax.add_artist(e)
+        a = objects['a'][i]
+        b = objects['b'][i]
+        if a > min_size and a < max_size and b > min_size and b < max_size:
+            e = Ellipse(xy=(objects['x'][i], objects['y'][i]),
+                    width=6*objects['a'][i],
+                    height=6*objects['b'][i],
+                    angle=objects['theta'][i] * 180. / np.pi)
+            e.set_facecolor('none')
+            e.set_edgecolor('red')
+            ax.add_artist(e)
     plt.show()
 
-#bg_subtraction(calibrated_science_data[0])
+#bg_subtraction(calibrated_calibration_data[0])
 
-def HR(data):
-    zp = 25.0
-    gain = 1.0
-    bkg = sep.Background(data)
-    data_sub = data - bkg
-    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
-    return flux
-print(HR(calibrated_calibration_data[0]))
 
-cali_dataB = []
-for i in range(126, 131):
-    filename = f"cali/B/d{i}.fits"
-    with fits.open(filename) as hdulist:
-        data = hdulist['HEADER'].data
-        cali_dataB.append(data)
-master_caliB = np.median(cali_dataB)
+def mag_atm_ext(filters, m_atm_ext):
+    calibration_airmass = []
+    for i in range(filters[0], filters[1]):
+        filename = f"{filters[2]}/d{i}.fits"
+        with fits.open(filename) as hdulist:
+            data = hdulist[0].header['AIRMASS']
+            calibration_airmass.append(data)
+    mag_airmass = np.median(calibration_airmass) * m_atm_ext
+    return mag_airmass
 
-print(master_caliB)
-#change
+
+mag_airmass_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
+mag_airmass_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
+mag_airmass_caliR = mag_atm_ext(calibration_filters[2], m_atm_extR)
+
+mag_airmass_sciB = mag_atm_ext(science_filters[0], m_atm_extB)
+mag_airmass_sciV = mag_atm_ext(science_filters[1], m_atm_extV)
+mag_airmass_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
+
+print(mag_airmass_caliB, mag_airmass_caliV, mag_airmass_caliR)

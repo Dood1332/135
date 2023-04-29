@@ -7,6 +7,10 @@ from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 import pandas as pd
 
+filename = fits.open('cali/B/d126.fits')
+data = filename[0].header['AIRMASS']
+print(data)
+
 def calibrate_science_data(flat_filters, science_filters):
     bias_data = []
     for i in range(100, 110):
@@ -103,13 +107,13 @@ def bg_subtraction(data):
 
 #bg_subtraction(calibrated_science_data[0])
 
-def HR(data):
-    zp = 25.0
-    gain = 1.0
-    bkg = sep.Background(data)
-    data_sub = data - bkg
-    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+# def HR(data):
+#     zp = 25.0
+#     gain = 1.0
+#     bkg = sep.Background(data)
+#     data_sub = data - bkg
+#     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+#     flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
     
 
 
