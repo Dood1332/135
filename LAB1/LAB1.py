@@ -10,9 +10,9 @@ m_dust_ext_sciB = 0.117
 m_dust_ext_sciV = 0.083
 m_dust_ext_sciR = 0.072
 
-m_dust_ext_caliB = 
+m_dust_ext_caliB = 0
 m_dust_ext_caliV = 0.148
-m_dust_ext_caliR = 
+m_dust_ext_caliR = 0
 
 #Multiply by airmass!
 m_atm_extB = 0.234 #478.5
@@ -83,14 +83,14 @@ calibrated_science_data = calibrate_science_data(flat_filters, science_filters)
 calibrated_calibration_data = calibrate_science_data(flat_filters, calibration_filters)
 
 
-# plt.figure("calibrated science")
-# ax = plt.axes()
-# ax.set_facecolor("red")
-# calibrated_calibration_data[0][calibrated_calibration_data[0] < 0] = 0
-# plt.imshow(calibrated_calibration_data[0], interpolation='nearest', vmin=0, vmax=50)
-# plt.colorbar()
-# #plt.savefig('calibrated_calibratedB.pdf')
-# plt.show()
+plt.figure("calibrated science")
+ax = plt.axes()
+ax.set_facecolor("red")
+calibrated_science_data[2][calibrated_science_data[2] < 0] = 0
+plt.imshow(calibrated_science_data[2], interpolation='nearest', vmin=0, vmax=50)
+plt.colorbar()
+#plt.savefig('calibrated_calibratedB.pdf')
+plt.show()
 
 #Making the HR Diagram
 
@@ -142,6 +142,19 @@ def mag_atm_ext(filters, m_atm_ext):
     mag_airmass = np.median(calibration_airmass) * m_atm_ext
     return mag_airmass
 
+def flux(data):
+    zp = 25.0
+    gain = 1.0
+    bkg = sep.Background(data)
+    data_sub = data - bkg
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+    return flux
+
+F_sciB = flux(calibrated_science_data[0])
+F_sciV = flux(calibrated_science_data[1])
+F_sciR = flux(calibrated_science_data[2])
+print(len(F_sciB),len(F_sciV),len(F_sciR))
 #Atm ext
 mag_airatm_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
 mag_airatm_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
@@ -153,11 +166,23 @@ mag_airatm_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
 
 #Dust ext
 mag_airdus_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
-mag_airdus_caliV = 
-mag_airdus_caliR = 
+mag_airdus_caliV = 0
+mag_airdus_caliR = 0
 
 m_dust_ext_sciB = 0.117
 m_dust_ext_sciV = 0.083
 m_dust_ext_sciR = 0.072
 
-print(mag_airatm_caliB, mag_airmatm_caliV, mag_airatm_caliR)
+mag_int_sciB = -2.5 * np.log10(F_sciB) - mag_airatm_sciB - mag_airdus_caliB
+mag_int_sciV = -2.5 * np.log10(F_sciV) - mag_airatm_sciV - mag_airdus_caliV
+mag_int_sciR = -2.5 * np.log10(F_sciR) - mag_airatm_sciR - mag_airdus_caliR
+print(len(mag_int_sciR), len(mag_int_sciV))
+
+x = mag_int_sciB
+y = mag_int_sciV
+
+# y = mag_int_sciR
+
+
+plt.scatter(x, y)
+plt.show()

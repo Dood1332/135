@@ -107,13 +107,13 @@ def bg_subtraction(data):
 
 #bg_subtraction(calibrated_science_data[0])
 
-# def HR(data):
-#     zp = 25.0
-#     gain = 1.0
-#     bkg = sep.Background(data)
-#     data_sub = data - bkg
-#     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-#     flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+def HR(data):
+    zp = 25.0
+    gain = 1.0
+    bkg = sep.Background(data)
+    data_sub = data - bkg
+    objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
     
 
 
