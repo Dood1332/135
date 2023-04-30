@@ -86,8 +86,11 @@ calibrated_calibration_data = calibrate_science_data(flat_filters, calibration_f
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-calibrated_science_data[2][calibrated_science_data[2] < 0] = 0
-plt.imshow(calibrated_science_data[2], interpolation='nearest', vmin=0, vmax=50)
+for i in range(0, 1):
+        calibrated_science_data[i][calibrated_science_data[i] < 0] = 0
+        calibrated_calibration_data[i][calibrated_calibration_data[i] < 0] = 0
+
+plt.imshow(calibrated_science_data[1], interpolation='nearest', vmin=0, vmax=50)
 plt.colorbar()
 #plt.savefig('calibrated_calibratedB.pdf')
 plt.show()
@@ -148,7 +151,7 @@ def flux(data):
     bkg = sep.Background(data)
     data_sub = data - bkg
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 3, err=bkg.globalrms, gain=gain)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 10, err=bkg.globalrms, gain=gain)
     return flux
 
 F_sciB = flux(calibrated_science_data[0])
@@ -173,16 +176,16 @@ m_dust_ext_sciB = 0.117
 m_dust_ext_sciV = 0.083
 m_dust_ext_sciR = 0.072
 
-mag_int_sciB = -2.5 * np.log10(F_sciB) - mag_airatm_sciB - mag_airdus_caliB
-mag_int_sciV = -2.5 * np.log10(F_sciV) - mag_airatm_sciV - mag_airdus_caliV
-mag_int_sciR = -2.5 * np.log10(F_sciR) - mag_airatm_sciR - mag_airdus_caliR
-print(len(mag_int_sciR), len(mag_int_sciV))
+mag_int_sciB = -2.5 * np.log(F_sciB) - mag_airatm_sciB - mag_airdus_caliB
+mag_int_sciV = -2.5 * np.log(F_sciV) - mag_airatm_sciV - mag_airdus_caliV
+mag_int_sciR = -2.5 * np.log(F_sciR) - mag_airatm_sciR - mag_airdus_caliR
+print(len(mag_int_sciB), len(mag_int_sciV))
 
-x = mag_int_sciB
-y = mag_int_sciV
+# x = mag_int_sciB
+# y = mag_int_sciV
 
 # y = mag_int_sciR
 
 
-plt.scatter(x, y)
-plt.show()
+# plt.scatter(x, y)
+# plt.show()
