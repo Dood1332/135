@@ -6,19 +6,6 @@ from matplotlib import rcParams
 from matplotlib.patches import Ellipse
 
 
-m_dust_ext_sciB = 0.117
-m_dust_ext_sciV = 0.083
-m_dust_ext_sciR = 0.072
-
-m_dust_ext_caliB = 0
-m_dust_ext_caliV = 0.148
-m_dust_ext_caliR = 0
-
-#Multiply by airmass!
-m_atm_extB = 0.234 #478.5
-m_atm_extV = 0.460 #386.2
-m_atm_extR = 0.094 #710.0
-
 flat_filters = [(110, 115, "B"), (115, 120, "V"), (120, 125, "R")]
 calibration_filters = [(126, 131, "cali/B"), (131, 136, "cali/V"), (136, 141, "cali/R")]
 science_filters = [(171, 176, "M53/B"), (176, 181, "M53/V"), (181, 186, "M53/R"),
@@ -151,35 +138,56 @@ def flux(data):
     bkg = sep.Background(data)
     data_sub = data - bkg
     objects = sep.extract(data_sub, 1.5, err=bkg.globalrms)
-    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 10, err=bkg.globalrms, gain=gain)
+    flux, flux_err, flag = sep.sum_circle(data_sub, objects['x'], objects['y'], 50, err=bkg.globalrms, gain=gain)
     return flux
 
 F_sciB = flux(calibrated_science_data[0])
 F_sciV = flux(calibrated_science_data[1])
 F_sciR = flux(calibrated_science_data[2])
+
+F_caliB = flux(calibrated_calibration_data[0])
+F_caliV = flux(calibrated_calibration_data[1])
+F_caliR = flux(calibrated_calibration_data[2])
+
 print(len(F_sciB),len(F_sciV),len(F_sciR))
-#Atm ext
-mag_airatm_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
-mag_airatm_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
-mag_airatm_caliR = mag_atm_ext(calibration_filters[2], m_atm_extR)
 
-mag_airatm_sciB = mag_atm_ext(science_filters[0], m_atm_extB)
-mag_airatm_sciV = mag_atm_ext(science_filters[1], m_atm_extV)
-mag_airatm_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
 
-#Dust ext
-mag_airdus_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
-mag_airdus_caliV = 0
-mag_airdus_caliR = 0
+# Atm sci
+m_atm_ext_sciB = .234
+m_atm_ext_sciB = mag_atm_ext(science_filters[0], m_atm_ext_sciB)
 
-m_dust_ext_sciB = 0.117
+m_atm_ext_sciV = .460
+m_atm_ext_sciV = mag_atm_ext(science_filters[1], m_atm_ext_sciV)
+
+m_atm_ext_sciR = .094
+m_atm_ext_sciR = mag_atm_ext(science_filters[2], m_atm_ext_sciR)
+print(m_atm_ext_sciB, m_atm_ext_sciV, m_atm_ext_sciR)
+
+#Dust sci
+m_dust_ext_sciB = 0.092
 m_dust_ext_sciV = 0.083
-m_dust_ext_sciR = 0.072
+m_dust_ext_sciR = 0.060
 
-mag_int_sciB = -2.5 * np.log(F_sciB) - mag_airatm_sciB - mag_airdus_caliB
-mag_int_sciV = -2.5 * np.log(F_sciV) - mag_airatm_sciV - mag_airdus_caliV
-mag_int_sciR = -2.5 * np.log(F_sciR) - mag_airatm_sciR - mag_airdus_caliR
-print(len(mag_int_sciB), len(mag_int_sciV))
+#B 478.5
+#V 386.2
+#R 710.0
+
+#Atm cali
+m_atm_ext_caliB = mag_atm_ext(calibration_filters[0], m_atm_ext_sciB)
+m_atm_ext_caliV = mag_atm_ext(calibration_filters[1], m_atm_ext_sciV)
+m_atm_ext_caliR = mag_atm_ext(calibration_filters[2], m_atm_ext_sciR)
+print(m_atm_ext_caliB, m_atm_ext_caliV, m_atm_ext_caliR)
+
+#Dust cali
+m_dust_ext_caliB = 0.173
+m_dust_ext_caliV = 0.148
+m_dust_ext_caliR = 0.107
+
+
+
+mag_int_caliB = -2.5 * np.log(F_caliB) - m_atm_ext_caliB - m_dust_ext_caliB
+mag_int_caliV = -2.5 * np.log(F_caliV) - m_atm_ext_caliV - m_dust_ext_caliV
+print(len(mag_int_caliB), len(mag_int_caliV))
 
 # x = mag_int_sciB
 # y = mag_int_sciV
@@ -187,5 +195,5 @@ print(len(mag_int_sciB), len(mag_int_sciV))
 # y = mag_int_sciR
 
 
-# plt.scatter(x, y)
-# plt.show()
+#plt.scatter(mag_int_caliB, mag_int_caliB - mag_int_caliV)
+plt.show()
