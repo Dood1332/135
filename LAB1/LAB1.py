@@ -184,10 +184,18 @@ m_dust_ext_caliV = 0.148
 m_dust_ext_caliR = 0.107
 
 
+# m_v -mI
+m_I_B = -2.5 * np.log(F_caliB) - m_atm_ext_caliB - m_dust_ext_caliB
+m_I_V = -2.5 * np.log(F_caliV) - m_atm_ext_caliV - m_dust_ext_caliV
+m_I_R = -2.5 * np.log(F_caliR) - m_atm_ext_caliR - m_dust_ext_caliR
 
-mag_int_caliB = -2.5 * np.log(F_caliB) - m_atm_ext_caliB - m_dust_ext_caliB
-mag_int_caliV = -2.5 * np.log(F_caliV) - m_atm_ext_caliV - m_dust_ext_caliV
-print(len(mag_int_caliB), len(mag_int_caliV))
+m_caliB = F_caliB - m_I_B
+m_caliV = F_caliV - m_I_V
+m_caliR = F_caliR - m_I_R
+
+print(len(m_caliB), len(m_caliV), len(m_caliR))
+
+print(len(m_I_B), len(m_I_V), len(m_I_R))
 
 # x = mag_int_sciB
 # y = mag_int_sciV
@@ -195,5 +203,5 @@ print(len(mag_int_caliB), len(mag_int_caliV))
 # y = mag_int_sciR
 
 
-#plt.scatter(mag_int_caliB, mag_int_caliB - mag_int_caliV)
+plt.scatter()
 plt.show()

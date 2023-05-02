@@ -123,7 +123,7 @@ calibrated_science = master_science / normalized_clean
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
-plt.imshow(calibrated_science,cmap='gray', vmin=0,vmax=np.amax(calibrated_science))
+plt.imshow(calibrated_science,interpolation='nearest', cmap='gray', vmin=0, vmax=50)
 plt.colorbar()
 plt.savefig('calibrated_science.pdf')
 plt.show()
