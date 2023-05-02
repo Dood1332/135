@@ -189,9 +189,17 @@ m_I_B = -2.5 * np.log(F_caliB) - m_atm_ext_caliB - m_dust_ext_caliB
 m_I_V = -2.5 * np.log(F_caliV) - m_atm_ext_caliV - m_dust_ext_caliV
 m_I_R = -2.5 * np.log(F_caliR) - m_atm_ext_caliR - m_dust_ext_caliR
 
-m_caliB = F_caliB - m_I_B
-m_caliV = F_caliV - m_I_V
-m_caliR = F_caliR - m_I_R
+m_B = -2.5 * np.log(F_caliB)
+m_V = -2.5 * np.log(F_caliV)
+m_R = -2.5 * np.log(F_caliR)
+
+m_zpB = m_B - m_I_B
+m_zpV = m_V - m_I_V
+m_zpR = m_R - m_I_R
+
+# m_caliB = F_caliB - m_I_B
+# m_caliV = F_caliV - m_I_V
+# m_caliR = F_caliR - m_I_R
 
 print(len(m_caliB), len(m_caliV), len(m_caliR))
 

@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import sep
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
-import pandas as pd
+from astropy.visualization import astropy_mpl_style
+# import pandas as pd
 
 filename = fits.open('cali/B/d126.fits')
 data = filename[0].header['AIRMASS']
@@ -106,6 +107,8 @@ def bg_subtraction(data):
     plt.show()
 
 #bg_subtraction(calibrated_science_data[0])
+
+
 
 def HR(data):
     zp = 25.0
