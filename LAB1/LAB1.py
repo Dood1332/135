@@ -118,7 +118,7 @@ def bg_subtraction(data):
             ax.add_artist(e)
     plt.show()
 
-bg_subtraction(calibrated_calibration_data[0])
+bg_subtraction(calibrated_science_data[0])
 
 
 def mag_atm_ext(filters, m_atm_ext):
@@ -197,7 +197,7 @@ m_zpB = m_B - m_I_B
 m_zpV = m_V - m_I_V
 m_zpR = m_R - m_I_R
 
-print(len(m_zpB), len(m_zpV), len(m_zpR))
+print((m_zpB), (m_zpV), (m_zpR))
 
 # # plt.scatter()
 # # plt.show()
