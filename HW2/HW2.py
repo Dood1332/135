@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import statistics
 
-#NOTE: I had all the fits files in a folder called Fits to keep things clean in PyCharm
+#NOTE: I had all the fits files in a folder called Fits to keep files organized
 
 ##### 1 #####
 bias1 = fits.open('Fits/bias01.fits')
@@ -11,7 +11,7 @@ bias1data = bias1['PRIMARY'].data
 
 #Graph of one of the bias.fits
 plt.hist2d(bias1data[:, 0], bias1data[:, 1], bins = 35)
-plt.savefig('bias2dhist.pdf')
+plt.savefig('bias2dhist.png')
 plt.show()
 bias1.close()
 ##############
@@ -21,7 +21,7 @@ counts, bins = np.histogram(bias1data[:, 0], bins = 35)
 plt.bar(bins[:-1], counts, width=np.diff(bins), align='edge')
 plt.xlabel('# of counts per pixel')
 plt.ylabel('# of pixels associated with count')
-plt.savefig('bias1dhist.pdf')
+plt.savefig('bias1dhist.png')
 plt.show()
 #############
 
@@ -41,7 +41,7 @@ master_bias = np.median([bias_data[0], bias_data[1], bias_data[2], bias_data[3],
 
 
 plt.hist2d(master_bias[:, 0], master_bias[:, 1], bins = 20)
-plt.savefig('master_bias.pdf')
+plt.savefig('master_bias.png')
 plt.show()
 
 #Same process as bias
@@ -55,7 +55,7 @@ for i in range(1, 6):
 master_dark = np.median([dark_data[0], dark_data[1], dark_data[2], dark_data[3], dark_data[4]], axis=0)
 
 plt.hist2d(master_dark[:, 0], master_dark[:, 1], bins = 19)
-plt.savefig('master_dark.pdf')
+plt.savefig('master_dark.png')
 plt.show()
 
 #Same process as dark and bias
@@ -68,8 +68,8 @@ for i in range(1, 6):
 
 master_flat = np.median([flat_data[0], flat_data[1], flat_data[2], flat_data[3], flat_data[4]], axis=0)
 
-plt.hist2d(master_flat[:, 0], master_flat[:, 1], bins = 250)
-plt.savefig('master_flat.pdf')
+plt.hist2d(master_flat[:, 0], master_flat[:, 1], bins = 25)
+plt.savefig('master_flat.png')
 plt.show()
 ##################
 
@@ -117,13 +117,10 @@ nonzero_master = np.where(master_science == 0, 1e-10, master_science)
 calibrated_science = master_science / normalized_clean
 
 #Graph of calibrated_science data
-# plt.imshow(calibrated_science, vmin=0, vmax=np.amax(calibrated_science))
-# plt.savefig('calibrated_science.pdf')
-# plt.show()
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")
 plt.imshow(calibrated_science,interpolation='nearest', cmap='gray', vmin=0, vmax=50)
 plt.colorbar()
-plt.savefig('calibrated_science.pdf')
+plt.savefig('calibrated_science.png')
 plt.show()
