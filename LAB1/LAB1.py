@@ -73,13 +73,13 @@ for i in range(0, 2):
         calibrated_science_data[i][calibrated_science_data[i] < 0] = 0
         calibrated_calibration_data[i][calibrated_calibration_data[i] < 0] = 0
 
-# plt.figure("calibrated science")
-# ax = plt.axes()
-# ax.set_facecolor("red")
-# plt.imshow(calibrated_science_data[0], interpolation='nearest', vmin=0, vmax=50)
-# plt.colorbar()
-# plt.savefig('calibrated_calibratedM53B.png')
-# plt.show()
+plt.figure("calibrated science")
+ax = plt.axes()
+ax.set_facecolor("red")
+plt.imshow(calibrated_science_data[3], interpolation='nearest', vmin=0, vmax=50)
+plt.colorbar()
+plt.savefig('calibrated_calibratedM53B.png')
+plt.show()
 
 #Making the HR Diagram
 
@@ -98,12 +98,11 @@ def bg_subtraction(data):
 
     fig, ax = plt.subplots()
     m, s = np.mean(data_sub), np.std(data_sub)
-    im = ax.imshow(data_sub, interpolation='nearest', cmap='gray',
-                    vmin=0, vmax=50)
+    im = ax.imshow(data_sub, interpolation='nearest', cmap='gray', vmin=0, vmax=50)
     
     #limit ellipse size
     min_size = 1
-    max_size = 50
+    max_size = 25
 
     for i in range(len(objects)):
         a = objects['a'][i]
@@ -118,7 +117,7 @@ def bg_subtraction(data):
             ax.add_artist(e)
     plt.show()
 
-bg_subtraction(calibrated_science_data[0])
+bg_subtraction(calibrated_science_data[3])
 
 
 def mag_atm_ext(filters, m_atm_ext):
@@ -160,7 +159,7 @@ m_atm_ext_sciB = mag_atm_ext(science_filters[0], m_atm_extB)
 m_atm_ext_sciV = mag_atm_ext(science_filters[1], m_atm_extV)
 m_atm_ext_sciR = mag_atm_ext(science_filters[2], m_atm_extR)
 
-print(m_atm_ext_sciB, m_atm_ext_sciV, m_atm_ext_sciR)
+#print(m_atm_ext_sciB, m_atm_ext_sciV, m_atm_ext_sciR)
 
 #Dust sci
 m_dust_ext_sciB = 0.092
@@ -171,7 +170,7 @@ m_dust_ext_sciR = 0.060
 m_atm_ext_caliB = mag_atm_ext(calibration_filters[0], m_atm_extB)
 m_atm_ext_caliV = mag_atm_ext(calibration_filters[1], m_atm_extV)
 m_atm_ext_caliR = mag_atm_ext(calibration_filters[2], m_atm_extR)
-print(m_atm_ext_caliB, m_atm_ext_caliV, m_atm_ext_caliR)
+#print(m_atm_ext_caliB, m_atm_ext_caliV, m_atm_ext_caliR)
 
 #Dust cali
 m_dust_ext_caliB = 0.173
@@ -193,11 +192,11 @@ m_V = -2.5 * np.log(F_caliV)
 m_R = -2.5 * np.log(F_caliR)
 
 #Zero point
-m_zpB = m_B - m_I_B
-m_zpV = m_V - m_I_V
-m_zpR = m_R - m_I_R
+m_zpB = 13.056 - m_I_B
+m_zpV = 13.327 - m_I_V
+m_zpR = 13.456 - m_I_R
 
-print((m_zpB), (m_zpV), (m_zpR))
+print(len(m_zpB), len(m_zpV), len(m_zpR))
 
 # # plt.scatter()
 # # plt.show()
