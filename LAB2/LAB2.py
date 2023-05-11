@@ -60,14 +60,14 @@ for microm in Micrometer:
     Hg_spectra.append(spectrum(Hg_spec_data, 250, 260))
     Sun_spectra.append(spectrum(Sun_spec_data, 250, 260))
     
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(20, 10))
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
 im1=ax1.plot(Hg_spectra[0])
 im2=ax2.plot(Hg_spectra[1])
-plt.suptitle("Mercury Spectra", fontsize=30)
+plt.suptitle("Mercury Spectra", fontsize=15)
 plt.show()
     
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(20, 10))
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
 im1=ax1.plot(Sun_spectra[0])
 im2=ax2.plot(Sun_spectra[1])
-plt.suptitle("Sun Spectra", fontsize=30)
+plt.suptitle("Sun Spectra", fontsize=15)
 plt.show()
