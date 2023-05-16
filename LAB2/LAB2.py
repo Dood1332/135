@@ -17,7 +17,7 @@ TestSpectrumHiResFiles = {"Sun" : {4.0 : 'High/Sun/X_400nm_High_Sun.00000105.FIT
                                    6.4 : 'High/Sun/X_640nm_High_Sun.00000119.FIT',
                                    6.8 : 'High/Sun/X_680nm_High_Sun.00000121.FIT'},
                           
-                          "Hg"  : {4.0 : 'High/Hg/X_400nm_High_Hg.00000103.FIT',
+                          "Hg"  : {4.0 : 'High/Hg/X_400nm_High_Hg.00000104.FIT',
                                    4.4 : 'High/Hg/X_440nm_High_Hg.00000106.FIT',
                                    5.2 : 'High/Hg/X_520nm_High_Hg.00000112.FIT',
                                    5.6 : 'High/Hg/X_560nm_High_Hg.00000114.FIT',
@@ -64,10 +64,20 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
 im1=ax1.plot(Hg_spectra[0])
 im2=ax2.plot(Hg_spectra[1])
 plt.suptitle("Mercury Spectra", fontsize=15)
+plt.savefig("Mercury Spectra.png")
 plt.show()
     
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
 im1=ax1.plot(Sun_spectra[0])
 im2=ax2.plot(Sun_spectra[1])
 plt.suptitle("Sun Spectra", fontsize=15)
+plt.savefig("Sun Spectra.png")
 plt.show()
+
+lambda2 = 435.833
+lambda1 = 404.656
+p2 = 660
+p1 = 368
+
+a = (lambda2 - lambda1)/(p2 - p1)
+print(a)
