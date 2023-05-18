@@ -11,6 +11,7 @@ TestSpectrumLoResFiles = {"Sun" : "Low/Sun/X_560nm_Low_Sun.00000101.FIT",
 
 TestSpectrumHiResFiles = {"Sun" : {4.0 : 'High/Sun/X_400nm_High_Sun.00000105.FIT',
                                    4.4 : 'High/Sun/X_440nm_High_Sun.00000107.FIT',
+                                   4.8 : 'High/Sun/X_480nm_High_Sun.00000111.FIT',
                                    5.2 : 'High/Sun/X_520nm_High_Sun.00000113.FIT',
                                    5.6 : 'High/Sun/X_560nm_High_Sun.00000115.FIT',
                                    6.0 : 'High/Sun/X_600nm_High_Sun.00000117.FIT',
@@ -19,13 +20,14 @@ TestSpectrumHiResFiles = {"Sun" : {4.0 : 'High/Sun/X_400nm_High_Sun.00000105.FIT
                           
                           "Hg"  : {4.0 : 'High/Hg/X_400nm_High_Hg.00000104.FIT',
                                    4.4 : 'High/Hg/X_440nm_High_Hg.00000106.FIT',
+                                   4.8 : 'High/Hg/X_480nm_High_Hg.00000110.FIT',
                                    5.2 : 'High/Hg/X_520nm_High_Hg.00000112.FIT',
                                    5.6 : 'High/Hg/X_560nm_High_Hg.00000114.FIT',
                                    6.0 : 'High/Hg/X_600nm_High_Hg.00000116.FIT',
                                    6.4 : 'High/Hg/X_640nm_High_Hg.00000118.FIT',
                                    6.8 : 'High/Hg/X_680nm_High_Hg.00000120.FIT'}}
 
-Micrometer = [4.0, 4.4, 5.2, 5.6, 6.0, 6.4, 6.8]
+Micrometer = [4.0, 4.4, 4.8, 5.2, 5.6, 6.0, 6.4, 6.8]
 
 hdu = pyfits.open(TestSpectrumLoResFiles['Hg'])
 
@@ -35,7 +37,7 @@ plt.imshow(spec_data)
 plt.show()
 
 #Get central 10 rows of the image
-print(spec_data.shape)
+#print(spec_data.shape)
 img_cut = spec_data[250:260]
 plt.imshow(img_cut)
 plt.axis('off')
@@ -60,13 +62,16 @@ for microm in Micrometer:
     Hg_spectra.append(spectrum(Hg_spec_data, 250, 260))
     Sun_spectra.append(spectrum(Sun_spec_data, 250, 260))
     
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
-im1=ax1.plot(Hg_spectra[0])
-im2=ax2.plot(Hg_spectra[1])
-plt.suptitle("Mercury Spectra", fontsize=15)
-plt.savefig("Mercury Spectra.png")
-plt.show()
-    
+
+for i in range(0,7,2):
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
+    im1=ax1.plot(Hg_spectra[i])
+    im2=ax2.plot(Hg_spectra[i+1])
+    plt.suptitle("Mercury Spectra", fontsize=15)
+    plt.savefig(f"Mercury Spectra {i}, {i+1}.png")
+    plt.show()
+
+
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
 im1=ax1.plot(Sun_spectra[0])
 im2=ax2.plot(Sun_spectra[1])
@@ -74,10 +79,11 @@ plt.suptitle("Sun Spectra", fontsize=15)
 plt.savefig("Sun Spectra.png")
 plt.show()
 
-lambda2 = 435.833
-lambda1 = 404.656
-p2 = 660
-p1 = 368
+#Hg wavelengths and pixel #
 
-a = (lambda2 - lambda1)/(p2 - p1)
+lambdas = [404.656, 435.833, 546.074, 576.960, 579.066, 696.543, 706.722]
+p       = [368, 660, 650, 191, 211, 583, 680]
+
+a = (lambdas[1] - lambdas[0])/(p[1] - p[0])
 print(a)
+print(b)
