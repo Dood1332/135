@@ -67,15 +67,15 @@ for microm in Micrometer:
     Sun_spectra.append(spectrum(Sun_spec_data, 250, 260))
     
 
-for i in range(0,7,2):
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
-    plt.xlabel('Pixel')
-    plt.ylabel('Intensity [a.u.]')
-    im1=ax1.plot(Hg_spectra[i])
-    im2=ax2.plot(Hg_spectra[i+1])
-    plt.suptitle("High Resolution Mercury Spectra", fontsize=15)
-    plt.savefig(f"Mercury Spectra {i}, {i+1}.png")
-    plt.show()
+# for i in range(0,7,2):
+#     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
+#     plt.xlabel('Pixel')
+#     plt.ylabel('Intensity [a.u.]')
+#     im1=ax1.plot(Hg_spectra[i])
+#     im2=ax2.plot(Hg_spectra[i+1])
+#     plt.suptitle("High Resolution Mercury Spectra", fontsize=15)
+#     plt.savefig(f"Mercury Spectra {i}, {i+1}.png")
+#     plt.show()
 
 # for i in range(0,7,2):
 #     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
@@ -94,11 +94,26 @@ p       = [368, 660, 650, 191, 211, 583, 680]
 
 hdulist = pyfits.open('High/Hg/X_600nm_High_Hg.00000116.FIT')
 header = hdulist[0].data
-# print(len(header[0]))
-print(header[191])
+print(len(header[0]))
+#print(header[191])
 #368, 660
+a400 = (lambdas[0] - lambdas[1])/(p[0] - p[1])
+b400 = lambdas[0] - (p[0]*a400)
+print(a400)
+print(b400)
 
-a = (lambdas[0] - lambdas[6])/(p[0] - p[6])
-b = lambdas[0] - (p[0]*a)
-print(a)
-print(b)
+
+xaxis = np.array(range(0,765))
+xaxis = (a400 * xaxis) + b400
+#print((xaxis))
+
+table1 = [393.3682, 394.4016, 396.1535, 396.8492, 404.5825, 406.3605, 407.1749, 407.7724, 410.1748, 413.2067, 414.3878, 416.7277, 420.2040, 422.6740, 423.5949, 425.0130, 425.0797, 425.4346, 426.0486, 427.1774, 432.5775, 434.0475, 438.3557, 440.4761, 441.5135, 452.8627, 455.4036]
+
+plt.figure(figsize=(10, 5))
+plt.plot(xaxis,Sun_spectra[0])
+plt.xlabel('Wavelength')
+plt.ylabel('Intensity')
+plt.show()
+
+plt.scatter(range(0,len(table1)), table1)
+plt.show()
