@@ -33,20 +33,24 @@ hdu = pyfits.open(TestSpectrumLoResFiles['Hg'])
 
 image_hdu = hdu[0]
 spec_data = image_hdu.data
-plt.imshow(spec_data)
-#plt.show()
+# plt.imshow(spec_data)
+# plt.show()
 
 #Get central 10 rows of the image
 #print(spec_data.shape)
 img_cut = spec_data[250:260]
-plt.imshow(img_cut)
-plt.axis('off')
-#plt.show()
+# plt.imshow(img_cut)
+# plt.axis('off')
+# plt.show()
 
 #Average rows to get accurate spectrum
 spectrum = np.average(img_cut, axis=0)
-plt.plot(spectrum)
-#plt.show()
+# plt.plot(spectrum)
+# plt.xlabel('Pixel')
+# plt.ylabel('Intensity [a.u.]')
+# plt.title('Low Resolution Mercury Spectrum')
+# plt.savefig('Low Res Hg.png')
+# plt.show()
 
 def spectrum(img_data, row_min, row_max):
     return np.flip(np.average(img_data[row_min:row_max,:], axis=0))
@@ -65,24 +69,34 @@ for microm in Micrometer:
 
 for i in range(0,7,2):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
+    plt.xlabel('Pixel')
+    plt.ylabel('Intensity [a.u.]')
     im1=ax1.plot(Hg_spectra[i])
     im2=ax2.plot(Hg_spectra[i+1])
-    plt.suptitle("Mercury Spectra", fontsize=15)
-    #plt.savefig(f"Mercury Spectra {i}, {i+1}.png")
-    #plt.show()
+    plt.suptitle("High Resolution Mercury Spectra", fontsize=15)
+    plt.savefig(f"Mercury Spectra {i}, {i+1}.png")
+    plt.show()
 
-
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
-im1=ax1.plot(Sun_spectra[0])
-im2=ax2.plot(Sun_spectra[1])
-plt.suptitle("Sun Spectra", fontsize=15)
-plt.savefig("Sun Spectra.png")
-#plt.show()
+# for i in range(0,7,2):
+#     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5))
+#     plt.xlabel('Pixel')
+#     plt.ylabel('Intensity [a.u.]')
+#     im1=ax1.plot(Sun_spectra[i])
+#     im2=ax2.plot(Sun_spectra[i+1])
+#     plt.suptitle("Sun Spectra", fontsize=15)
+#     plt.savefig(f"Sun Spectra{i}, {i+1}.png")
+#     plt.show()
 
 #Hg wavelengths and pixel #
 
 lambdas = [404.656, 435.833, 546.074, 576.960, 579.066, 696.543, 706.722]
 p       = [368, 660, 650, 191, 211, 583, 680]
+
+hdulist = pyfits.open('High/Hg/X_600nm_High_Hg.00000116.FIT')
+header = hdulist[0].data
+# print(len(header[0]))
+print(header[191])
+#368, 660
 
 a = (lambdas[0] - lambdas[6])/(p[0] - p[6])
 b = lambdas[0] - (p[0]*a)
