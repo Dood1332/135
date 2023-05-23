@@ -137,10 +137,47 @@ table1 = [393.3682, 394.4016, 396.1535, 396.8492, 404.5825, 406.3605, 407.1749, 
           413.2067, 414.3878, 416.7277, 420.2040, 422.6740, 423.5949, 425.0130, 425.0797, 425.4346, 
           426.0486, 427.1774, 432.5775, 434.0475, 438.3557, 440.4761, 441.5135, 452.8627, 455.4036]
 
-for i in range(0,8):
+for i in range(0,1):
     plt.figure(figsize=(10, 5))
     plt.plot(axes[i],Sun_spectra[i])
+    plt.axvline(404.5825)
     plt.xlabel('Wavelength')
     plt.ylabel('Intensity')
     plt.savefig(f'Sun Wavelength {i}')
     plt.show()
+
+# Sun400 = [393.440, Ca II,
+#           396.861, Ca II,
+#           404.549, Fe I,
+#           406.364, Fe I,
+#           410.200, H,
+#           422.700, Ca I,
+#           430.814, Fe I,
+#           432.523, Fe I,
+#           434.017, H,
+#           438.395, Fe I,
+#           440.424, Fe I]
+
+# Sun480 = [438.252, Fe I,
+#           452.716, Fe I,
+#           466.643, Mg I,
+#           486.142, H,
+#           517.427, Mg I,
+#           518.605, Mg I]
+
+# Sun560 = [517.232, Mg I,
+#           518.403, Mg I,
+#           526.917, Fe I,
+#           537.027, Fe I,
+#           552.778, Mg I
+#           589.070, Na I (D1),
+#           ]
+#wavelength, Intensity
+
+# plt.plot(axes[i],Sun_spectra[i])
+# plt.xlabel('Wavelength')
+# plt.ylabel('Intensity')
+# plt.show()
+A0_hdu = pyfits.open('A0.fits')
+A0_spec = A0_hdu[1].data
+print(A0_spec)
