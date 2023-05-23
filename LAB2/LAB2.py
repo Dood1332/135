@@ -127,9 +127,6 @@ while i < len(lambdas):
     b.append(b_value)
     i += counter
 
-print(len(a))
-print(len(b))
-
 axes=[]
 xaxis = np.array(range(0,765))
 for i in (range(len(a))):
@@ -145,5 +142,5 @@ for i in range(0,8):
     plt.plot(axes[i],Sun_spectra[i])
     plt.xlabel('Wavelength')
     plt.ylabel('Intensity')
-    plt.savefig(f'Sun Wavelength{i}')
+    plt.savefig(f'Sun Wavelength {i}')
     plt.show()
