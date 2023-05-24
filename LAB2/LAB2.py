@@ -126,7 +126,6 @@ while i < len(lambdas):
     a.append(a_value)
     b.append(b_value)
     i += counter
-
 axes=[]
 xaxis = np.array(range(0,765))
 for i in (range(len(a))):
@@ -135,17 +134,21 @@ for i in (range(len(a))):
 
 table1 = [393.3682, 394.4016, 396.1535, 396.8492, 404.5825, 406.3605, 407.1749, 407.7724, 410.1748, 
           413.2067, 414.3878, 416.7277, 420.2040, 422.6740, 423.5949, 425.0130, 425.0797, 425.4346, 
-          426.0486, 427.1774, 432.5775, 434.0475, 438.3557, 440.4761, 441.5135, 452.8627, 455.4036]
+          426.0486, 427.1774, 432.5775, 434.0475, 438.3557, 440.4761, 441.5135, 452.8627, 455.4036,
+          455.4036, 455.4036, 486.1342, 489.1502, 492.0514, 495.7613, 516.7327, 517.2698, 518.3619, 
+          525.0216, 526.9550, 532.8051, 552.8418, 588.9973, 589.5940, 610.2727, 612.2226, 616.2180,
+          630.2499, 656.2808]
 
-for i in range(0,1):
-    plt.figure(figsize=(10, 5))
-    plt.plot(axes[i],Sun_spectra[i])
-    plt.axvline(404.5825)
-    plt.xlabel('Wavelength')
-    plt.ylabel('Intensity')
-    plt.savefig(f'Sun Wavelength {i}')
-    plt.show()
-
+# for i in range(0,8):
+#     plt.figure(figsize=(10, 5))
+#     plt.plot(axes[i],Sun_spectra[i])
+#     plt.vlines(x=table1, ymin =np.min(Sun_spectra[i])-100, ymax=np.max(Sun_spectra[i])+100, color='red')
+#     plt.xlim(((axes[i][0]), axes[i][-1]))
+#     plt.xlabel('Wavelength')
+#     plt.ylabel('Intensity')
+#     plt.savefig(f'Sun Wavelength {i}')
+#     plt.show()
+print(393.3682-393.440)
 # Sun400 = [393.440, Ca II,
 #           396.861, Ca II,
 #           404.549, Fe I,
@@ -178,6 +181,46 @@ for i in range(0,1):
 # plt.xlabel('Wavelength')
 # plt.ylabel('Intensity')
 # plt.show()
-A0_hdu = pyfits.open('A0.fits')
-A0_spec = A0_hdu[1].data
-print(A0_spec)
+
+# A2_hdu = pyfits.open('A2.fits')
+# G2_hdu = pyfits.open('G2_+0.0_Dwarf.fits')
+# K2_hdu = pyfits.open('K2_+0.0_Dwarf.fits')
+# F2_hdu = pyfits.open('F2_+0.0_Dwarf.fits')
+# M2_hdu = pyfits.open('M2_+0.0_Dwarf.fits')
+# A2_spec = A2_hdu[1].data
+# G2_spec = G2_hdu[1].data
+# K2_spec = K2_hdu[1].data
+# F2_spec = F2_hdu[1].data
+# M2_spec = M2_hdu[1].data
+# print(len(A2_spec))
+# A2x = []
+# A2y = []
+# G2x = []
+# G2y = []
+# K2x = []
+# K2y = []
+# F2x = []
+# F2y = []
+# M2x = []
+# M2y = []
+# for i in range(0,len(A2_spec)):
+#     A2x.append((A2_spec[i][0]*100)+40)
+#     A2y.append(A2_spec[i][1])
+#     G2x.append((G2_spec[i][0]*100)+40)
+#     G2y.append(G2_spec[i][1]+10)
+#     K2x.append((K2_spec[i][0]*100)+40)
+#     K2y.append(K2_spec[i][1]+15)
+#     F2x.append((F2_spec[i][0]*100)+40)
+#     F2y.append(F2_spec[i][1]+20)    
+#     M2x.append((M2_spec[i][0]*100)+40)
+#     M2y.append(M2_spec[i][1]+25)       
+# plt.figure(figsize=(10, 7))
+# plt.plot(A2x,A2y)
+# plt.plot(G2x,G2y)
+# plt.plot(K2x,K2y)
+# plt.plot(F2x,F2y)
+# plt.plot(M2x,M2y)
+# plt.plot(axes[1],Sun_spectra[0])
+# plt.plot(axes[1],Sun_spectra[5])
+# plt.legend(['A2', 'G2', 'K2', 'F2', 'M2', 'The Sun 400nm', 'The Sun 600nm'])
+# plt.show()
