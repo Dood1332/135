@@ -46,6 +46,5 @@ plt.ylabel('Amplitude (dBm)')
 for csv_file in csv_files:
     x, y = print_csv_from_row(csv_file)
     plt.plot(x, y)
-plt.legend(['TRACE051.CSV', 'TRACE052.CSV', 'TRACE053.CSV', 'TRACE054.CSV', 'TRACE055.CSV',
-             'TRACE056.CSV', 'TRACE057.CSV', 'TRACE058.CSV', 'TRACE059.CSV',])
+plt.legend(['051', '052', '053', '054', '055', '056', '057', '058', '059',])
 plt.show()
