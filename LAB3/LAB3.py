@@ -47,4 +47,5 @@ for csv_file in csv_files:
     x, y = print_csv_from_row(csv_file)
     plt.plot(x, y)
 plt.legend(['051', '052', '053', '054', '055', '056', '057', '058', '059',])
+plt.savefig('Plot.png')
 plt.show()
