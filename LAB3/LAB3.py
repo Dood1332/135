@@ -11,13 +11,15 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from glob import glob
+from scipy.stats import norm
+
 
 # with open('TRACE051.CSV', newline='') as f:
 #     reader = csv.reader(f)
 #     for row in reader:
 #         print(row)
 
-def print_csv_from_row(csv_file):
+def csv_plot(csv_file):
     with open(csv_file, 'r') as file:
         reader = csv.reader(file)
         next(reader, None)  # Skip header row
@@ -31,21 +33,26 @@ def print_csv_from_row(csv_file):
                 yaxis = float(row[2])
                 x.append(xaxis)
                 y.append(yaxis)
-                # converted_row = [float(element) for element in row]
-                # print(converted_row)
         return x, y
 
 
 csv_files = ['TRACE051.CSV', 'TRACE052.CSV', 'TRACE053.CSV', 'TRACE054.CSV', 'TRACE055.CSV',
              'TRACE056.CSV', 'TRACE057.CSV', 'TRACE058.CSV', 'TRACE059.CSV',]
 
+# mu = 0
+# sigma = 1
+# x1 = csv_plot(csv_files[0])
+# y1 = norm.pdf(x1[0], mu, sigma)
+# print(x1[0])
+
+
 plt.figure(figsize = (10,5))
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude (dBm)')
 
 for csv_file in csv_files:
-    x, y = print_csv_from_row(csv_file)
+    x, y = csv_plot(csv_file)
     plt.plot(x, y)
-plt.legend(['051', '052', '053', '054', '055', '056', '057', '058', '059',])
-plt.savefig('Plot.png')
+plt.legend(['051', '052', '053', '054', '055', '056', '057', '058', '059'])
+#plt.savefig('Plot.png')
 plt.show()
