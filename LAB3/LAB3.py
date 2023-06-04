@@ -1,9 +1,3 @@
-#conversion from decibels referenced to milliwatts. Values defined in lab manual.
-#Power (mW) per RBW = 10^(dBM/10)
-#convert to brightness distribution
-#21cm line should match 1000k black body
-#20.9cm matches with 100k 
-
 from astropy.io import fits as pyfits
 from astropy import units as u
 import csv
@@ -15,10 +9,6 @@ from scipy.stats import norm
 from scipy.optimize import curve_fit
 import scipy.stats as stats
 
-# with open('TRACE051.CSV', newline='') as f:
-#     reader = csv.reader(f)
-#     for row in reader:
-#         print(row)
 
 def csv_plot(csv_file):
     with open(csv_file, 'r') as file:
