@@ -8,7 +8,7 @@ from glob import glob
 from scipy.stats import norm
 from scipy.optimize import curve_fit
 import scipy.stats as stats
-
+from scipy.interpolate import UnivariateSpline
 
 def csv_plot(csv_file):
     with open(csv_file, 'r') as file:
@@ -45,18 +45,11 @@ for csv_file in csv_files[0:8]:
     spline = UnivariateSpline(x, ytemp-np.max(ytemp)/2, s=0)
     r1, r2 = spline.roots()
     c = r2 - r1
-
+    
     def func(x, a, b,c,d,e):
-        return a*np.exp(-((x-b)**2)/(2*(c**2)))+d*x+e
+        return a*np.exp(-((x-b)**2)/(c))+d*x+e
     #next line from curve_fit documentation. p0=(guess values)
     popt, pcov = curve_fit(func, x, y, p0=(a, b, c, 0 , 7.085*1e-8))# bounds=(0, [.5, ,.5, 1., 0.5]))
-    
-    def sub(x, d, e):
-    sub = []
-    s = d*x+e
-    sub.append(s)
-    return sub
-
     plt.figure(figsize = (10,5))
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Amplitude (dBm)')
@@ -67,17 +60,3 @@ for csv_file in csv_files[0:8]:
     plt.legend(['Fitted Curve', f'{csv_file[0:8]}'])
     #plt.savefig(f'{csv_file}.png')
     plt.show()
-
-
-
-# plt.figure(figsize = (10,5))
-# plt.xlabel('Frequency (Hz)')
-# plt.ylabel('Amplitude (dBm)')
-
-# for csv_file in csv_files:
-#     x, y = csv_plot(csv_file)
-#     plt.plot(x, y)
-
-# plt.legend(['051', '052', '053', '054', '055', '056', '057', '058', '059'])
-# #plt.savefig('Plot.png')
-# plt.show()
