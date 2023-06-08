@@ -31,7 +31,7 @@ def csv_plot(csv_file):
 
 csv_files = ['TRACE051.CSV', 'TRACE052.CSV', 'TRACE053.CSV', 'TRACE054.CSV', 'TRACE055.CSV',
              'TRACE056.CSV', 'TRACE057.CSV', 'TRACE058.CSV', 'TRACE059.CSV',]
-for csv_file in csv_files[0:8]:
+for csv_file in csv_files:
     x, y = csv_plot(csv_file)
     x = np.array(x)
     y = np.array(y)
@@ -93,25 +93,39 @@ for csv_file in csv_files[0:8]:
     r1, r2 = spline.roots()
     c = r2 - r1
 
-    def func(x, a, b,c,d,e):
-        return a*np.exp(-((x-b)**2)/(2*(c**2)))+d*x+e
-    #next line from curve_fit documentation. p0=(guess values)
-    popt, pcov = curve_fit(func, x, y[0,:], p0=(a, b, c, 0 , 7.085*1e-8))
-    #print(len(y[0,:]))
+    #v = ((1.4204*10**9) - x)/ (1.4204*10**9)
+    v = (3.0*10**8)*((-(1.4204*10**9)/x)+1)/1000
+
+    # def func(x, a, b,c,d,e):
+    #     return a*np.exp(-((x-b)**2)/(2*(c**2)))+d*x+e
+    # popt, pcov = curve_fit(func, x, y[0,:], p0=(a, b, c, 0 , 3.085*1e-16))
+    # #print(len(y[0,:]))
+    # plt.figure(figsize = (10,5))
+    # plt.xlabel('Frequency (Hz)')
+    # plt.ylabel('Watts per Hertz (w/Hz)')
+    # plt.plot(x, func(x, *popt), 'r-',
+    #         label='fit: a=%f, b=%f, c=%f, d=%f, e=%f' % tuple(popt))
+    # plt.plot(x, y[0,:], 'b-', label='data')
+    # plt.legend(['Fitted Curve', f'{csv_file[0:8]}'])
+    # #plt.savefig(f'{csv_file}.png')
+    # plt.show()
+
     plt.figure(figsize = (10,5))
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Amplitude (dBm)')
-    plt.plot(x, func(x, *popt), 'r-',
-            label='fit: a=%f, b=%f, c=%f, d=%f, e=%f' % tuple(popt))
-    #feeding my x values into my function with guess values
-    plt.plot(x, y[0,:], 'b-', label='data')
-    plt.legend(['Fitted Curve', f'{csv_file[0:8]}'])
-    #plt.savefig(f'{csv_file}.png')
-    #plt.show()
+    plt.xlabel('Velocity (km/s)')
+    plt.ylabel('Watts per Hertz (w/Hz)')
+    plt.grid()
+    plt.vlines(x=0,ymin=np.min(y[0,:]),ymax=np.max(y[0,:]), color='r')
+    plt.plot(v, y[0,:])
+    plt.legend(['21 cm line', f'{csv_file[0:8]}'])
+    plt.savefig(f'VELOCITY{csv_file[0:8]}.png')
+    plt.show()
 
     #calculating the hydrogen column density   
-    dv = (x[2]-x[1])/len(x)
-    Tb = (y[0,:])/(2*0.5*(1.38*(10**(-23))))
+    dv = (x[2]-x[1])
+    beta = 0.5
+    k = 1.38*(10**(-23))
+    Tb = (y[0,:])/(2*beta*k)
+
     N = ((1.8224*(10**18))*dv*np.sum(Tb))
     print(N)
 
