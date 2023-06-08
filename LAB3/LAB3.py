@@ -120,7 +120,7 @@ for csv_file in csv_files:
     plt.savefig(f'VELOCITY{csv_file[0:8]}.png')
     plt.show()
 
-    #calculating the hydrogen column density   
+    #calculating the hydrogen column density   a
     dv = (x[2]-x[1])
     beta = 0.5
     k = 1.38*(10**(-23))
