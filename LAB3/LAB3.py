@@ -84,7 +84,7 @@ for csv_file in csv_files:
     #print(a)
     max_index = np.argmax(y[0,:])
     b = x[max_index]
-
+    
     def make_norm_dist(x, mean, sd):
         return 1.0/(sd*np.sqrt(2*np.pi))*np.exp(-(x - mean)**2/(2*sd**2))
     ytemp = make_norm_dist(x, b, 1)
@@ -93,9 +93,9 @@ for csv_file in csv_files:
     r1, r2 = spline.roots()
     c = r2 - r1
 
-    #v = ((1.4204*10**9) - x)/ (1.4204*10**9)
     v = (3.0*10**8)*((-(1.4204*10**9)/x)+1)/1000
-
+    bv = v[max_index]
+    print(bv)
     # def func(x, a, b,c,d,e):
     #     return a*np.exp(-((x-b)**2)/(2*(c**2)))+d*x+e
     # popt, pcov = curve_fit(func, x, y[0,:], p0=(a, b, c, 0 , 3.085*1e-16))
@@ -107,7 +107,7 @@ for csv_file in csv_files:
     #         label='fit: a=%f, b=%f, c=%f, d=%f, e=%f' % tuple(popt))
     # plt.plot(x, y[0,:], 'b-', label='data')
     # plt.legend(['Fitted Curve', f'{csv_file[0:8]}'])
-    # #plt.savefig(f'{csv_file}.png')
+    # plt.savefig(f'{csv_file}.png')
     # plt.show()
 
     plt.figure(figsize = (10,5))
@@ -117,8 +117,8 @@ for csv_file in csv_files:
     plt.vlines(x=0,ymin=np.min(y[0,:]),ymax=np.max(y[0,:]), color='r')
     plt.plot(v, y[0,:])
     plt.legend(['21 cm line', f'{csv_file[0:8]}'])
-    plt.savefig(f'VELOCITY{csv_file[0:8]}.png')
-    plt.show()
+    #plt.savefig(f'VELOCITY{csv_file[0:8]}.png')
+    #plt.show()
 
     #calculating the hydrogen column density   a
     dv = (x[2]-x[1])
