@@ -72,7 +72,7 @@ calibrated_calibration_data = calibrate_science_data(flat_filters, calibration_f
 for i in range(0, 2):
         calibrated_science_data[i][calibrated_science_data[i] < 0] = 0
         calibrated_calibration_data[i][calibrated_calibration_data[i] < 0] = 0
-
+print(calibrated_science_data[3])
 plt.figure("calibrated science")
 ax = plt.axes()
 ax.set_facecolor("red")

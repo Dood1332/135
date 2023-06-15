@@ -33,24 +33,24 @@ hdu = pyfits.open(TestSpectrumLoResFiles['Hg'])
 
 image_hdu = hdu[0]
 spec_data = image_hdu.data
-# plt.imshow(spec_data)
-# plt.show()
+plt.imshow(spec_data)
+plt.show()
 
 #Get central 10 rows of the image
-#print(spec_data.shape)
+print(spec_data.shape)
 img_cut = spec_data[250:260]
-# plt.imshow(img_cut)
-# plt.axis('off')
-# plt.show()
+plt.imshow(img_cut)
+plt.axis('off')
+plt.show()
 
 #Average rows to get accurate spectrum
 spectrum = np.average(img_cut, axis=0)
-# plt.plot(spectrum)
-# plt.xlabel('Pixel')
-# plt.ylabel('Intensity [a.u.]')
-# plt.title('Low Resolution Mercury Spectrum')
-# plt.savefig('Low Res Hg.png')
-# plt.show()
+plt.plot(spectrum)
+plt.xlabel('Pixel')
+plt.ylabel('Intensity [a.u.]')
+plt.title('Low Resolution Mercury Spectrum')
+plt.savefig('Low Res Hg.png')
+plt.show()
 
 def spectrum(img_data, row_min, row_max):
     return np.flip(np.average(img_data[row_min:row_max,:], axis=0))
