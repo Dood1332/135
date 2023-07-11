@@ -52,6 +52,7 @@ for csv_file in csv_files:
     def make_norm_dist(x, mean, sd):
         return 1.0/(sd*np.sqrt(2*np.pi))*np.exp(-(x - mean)**2/(2*sd**2))
     ytemp = make_norm_dist(x, b, 1)
+    
     # create a spline of x and blue-np.max(blue)/2 
     spline = UnivariateSpline(x, ytemp-np.max(ytemp)/2, s=0)
     r1, r2 = spline.roots()
@@ -59,6 +60,7 @@ for csv_file in csv_files:
 
     def func(x, a, b,c,d,e):
         return a*np.exp(-((x-b)**2)/(2*(c**2)))+d*x+e
+    
     #next line from curve_fit documentation. p0=(guess values)
     popt, pcov = curve_fit(func, x, y, p0=(a, b, c, 0 , 7.085*1e-8))# bounds=(0, [.5, ,.5, 1., 0.5]))
     
@@ -88,6 +90,7 @@ for csv_file in csv_files:
     def make_norm_dist(x, mean, sd):
         return 1.0/(sd*np.sqrt(2*np.pi))*np.exp(-(x - mean)**2/(2*sd**2))
     ytemp = make_norm_dist(x, b, 1)
+
     # create a spline of x and blue-np.max(blue)/2 
     spline = UnivariateSpline(x, ytemp-np.max(ytemp)/2, s=0)
     r1, r2 = spline.roots()
